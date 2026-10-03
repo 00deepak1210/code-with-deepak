@@ -62,6 +62,16 @@ npm run preview   # serves dist/ locally
 host. Asset paths are relative (`base: './'`), so it also works from a sub-folder.
 Open it through a server (`npm run preview`) rather than double-clicking `index.html`.
 
+### Single-file version (open without a server)
+
+```bash
+npm run build:single   # writes dist-single/diet-coke-3d.html
+```
+
+This creates one self-contained HTML file (about 1.4 MB) with the code, styles and fonts
+embedded. Double-click it to open it in Chrome, Edge or Firefox. It works offline, and you can
+pass the file to anyone without them installing anything.
+
 ## Project structure
 
 ```
