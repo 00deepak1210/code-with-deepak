@@ -584,3 +584,30 @@ export function createShadowTexture() {
   tex.colorSpace = THREE.SRGBColorSpace;
   return tex;
 }
+
+// Cola foam: a tan base packed with tiny bubbles.
+export function createFoamTexture() {
+  const canvas = makeCanvas(512, 256);
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#b38459';
+  ctx.fillRect(0, 0, 512, 256);
+  const rand = seeded(9);
+  for (let i = 0; i < 3200; i++) {
+    const x = rand() * 512;
+    const y = rand() * 256;
+    const r = 1.2 + Math.pow(rand(), 3) * 7;
+    const g = ctx.createRadialGradient(x - r * 0.35, y - r * 0.35, 0, x, y, r);
+    g.addColorStop(0, 'rgba(255,246,232,0.95)');
+    g.addColorStop(0.55, 'rgba(228,196,158,0.85)');
+    g.addColorStop(1, 'rgba(110,70,40,0.55)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.wrapS = THREE.RepeatWrapping;
+  tex.repeat.set(3, 1);
+  return tex;
+}

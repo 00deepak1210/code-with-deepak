@@ -17,28 +17,38 @@ export function getStates(mobile = window.matchMedia(MOBILE_QUERY).matches) {
   if (!mobile) {
     S.hero = { ...B, y: 0.02, rx: 0.06, rz: -0.12, spin: 1, float: 1, bubbles: 1 };
     S.sugar = { ...B, x: 0.42, y: -0.02, scale: 1.04, rx: 0.03, ry: TAU * 0.25, rz: 0.05, float: 0.5, shadow: 0.5, bubbles: 0.2 };
-    S.crack = { ...B, y: -0.14, scale: 1.24, rx: 0.68, ry: TAU, float: 0.3, bubbles: 0.4 };
-    S.cold = { ...B, x: -0.4, y: -0.02, rx: 0.04, ry: TAU + 0.2, rz: 0.06, tab: 0.12, mouth: 1, burst: 1, float: 0.6, shadow: 0.45, bubbles: 0.3 };
+    S.crack = { ...B, y: -0.14, scale: 1.24, rx: 0.68, ry: TAU - 0.45, float: 0.3, bubbles: 0.4 };
+    S.cold = { ...B, x: -0.57, y: -0.02, scale: 0.92, rx: 0.04, ry: TAU + 0.2, rz: 0.06, tab: 0.12, mouth: 1, burst: 1, float: 0.6, shadow: 0.45, bubbles: 0.3, gx: -0.14, gy: -0.36, gscale: 0.68 };
+    // Tilted past horizontal with the logo reading left to right, the
+    // opening just above the glass
+    S.pourPose = { x: -0.331, y: 0.58, scale: 0.7, rx: 0, ry: TAU, rz: -1.95, float: 0, shadow: 0 };
+    S.servePose = { x: -0.6, y: -0.06, scale: 0.85, rx: 0.04, ry: TAU + 0.35, rz: 0.08, float: 0.6, shadow: 0.45 };
     S.flavors = { ...B, y: 0.03, scale: 0.96, rx: 0.05, ry: TAU, rz: -0.05, float: 1, sway: 1, shadow: 0.4, bubbles: 0.6 };
     S.footer = { ...B, y: 0.2, scale: 0.8, rx: 0.06, ry: TAU, rz: -0.1, spin: 1, float: 1, bubbles: 0.7 };
   } else {
     // Portrait: the can lives in the top half, copy sits underneath.
     S.hero = { ...B, y: 0.16, scale: 0.82, rx: 0.06, rz: -0.12, spin: 1, float: 1, bubbles: 1 };
     S.sugar = { ...B, y: 0.4, scale: 0.78, rx: 0.03, ry: TAU * 0.25, rz: 0.05, float: 0.5, shadow: 0.5, bubbles: 0.2 };
-    S.crack = { ...B, y: 0.12, scale: 0.92, rx: 0.68, ry: TAU, float: 0.3, bubbles: 0.4 };
-    S.cold = { ...B, y: 0.42, scale: 0.7, rx: 0.04, ry: TAU + 0.2, rz: 0.06, tab: 0.12, mouth: 1, burst: 1, float: 0.6, shadow: 0.45, bubbles: 0.3 };
+    S.crack = { ...B, y: 0.12, scale: 0.92, rx: 0.68, ry: TAU - 0.45, float: 0.3, bubbles: 0.4 };
+    S.cold = { ...B, x: -0.3, y: 0.4, scale: 0.62, rx: 0.04, ry: TAU + 0.2, rz: 0.06, tab: 0.12, mouth: 1, burst: 1, float: 0.6, shadow: 0.45, bubbles: 0.3, gx: 0.28, gy: 0.24, gscale: 0.44 };
+    S.pourPose = { x: -0.13, y: 0.72, scale: 0.5, rx: 0, ry: TAU, rz: -1.95, float: 0, shadow: 0 };
+    S.servePose = { x: -0.32, y: 0.4, scale: 0.6, rx: 0.04, ry: TAU + 0.35, rz: 0.08, float: 0.6, shadow: 0.45 };
     S.flavors = { ...B, y: 0.2, scale: 0.72, rx: 0.05, ry: TAU, rz: -0.05, float: 1, sway: 1, shadow: 0.4, bubbles: 0.6 };
     S.footer = { ...B, y: 0.1, scale: 0.55, rx: 0.06, ry: TAU, rz: -0.1, spin: 1, float: 1, bubbles: 0.7 };
   }
-  // Once sprayed, the burst stays finished; animating it back to 0 would
-  // replay the spray in reverse on the way to the flavors.
-  S.flavors.burst = 1;
-  S.footer.burst = 1;
+  // Effects that have played out stay finished afterwards (animating them
+  // back to 0 would replay them in reverse); the glass sinks out of view.
+  const finished = { burst: 1, stream: 1, streamTail: 1, fill: 0.82, foam: 0.5, ice: 1, gx: S.cold.gx, gy: S.cold.gy, gscale: S.cold.gscale };
+  Object.assign(S.flavors, finished);
+  Object.assign(S.footer, finished);
   S.calories = { ...S.sugar, ry: TAU * 0.5 };
   S.caffeine = { ...S.sugar, ry: TAU * 0.75 };
   S.cracked = { ...S.crack, tab: 1, mouth: 1 };
   S.sprayed = { ...S.crack, tab: 0.12, mouth: 1, burst: 1, rx: 0.5, scale: S.crack.scale * 0.96, bubbles: 0.9 };
-  S.frozen = { ...S.cold, ry: TAU + 0.8, frost: 1, ice: 1 };
+  S.chilled = { ...S.cold, ry: TAU + 0.45, frost: 1, glass: 1, ice: 1 };
+  S.pour = { ...S.chilled, ...S.pourPose };
+  S.poured = { ...S.pour, rz: S.pourPose.rz - 0.15, stream: 1, fill: 0.82, foam: 1 };
+  S.served = { ...S.poured, ...S.servePose, streamTail: 1, foam: 0.5 };
   S.exit = { ...S.flavors, y: 1.9, ry: TAU + 1.2, rz: 0.35, sway: 0, shadow: 0, bubbles: 0 };
   S.below = { ...S.exit, y: -1.9 }; // waits under the fold for the finale
   return S;
@@ -155,23 +165,33 @@ export function initChoreography({ experience, onStep, onCrack }) {
       .fromTo(
         temp,
         { value: 24 },
-        { value: 3, duration: 0.7, ease: 'power1.inOut', onUpdate: () => (tempEl.textContent = Math.round(temp.value)) },
+        { value: 3, duration: 0.22, ease: 'power1.inOut', onUpdate: () => (tempEl.textContent = Math.round(temp.value)) },
         0,
       )
-      .fromTo('.cold__specs li', { opacity: 0, y: 30 }, { opacity: 1, y: 0, stagger: 0.08, duration: 0.3 }, 0.3)
-      .to({}, { duration: 0.2 }, 0.8);
+      .fromTo('.cold__specs li', { opacity: 0, y: 30 }, { opacity: 1, y: 0, stagger: 0.03, duration: 0.1 }, 0.12)
+      .to({}, { duration: 0.01 }, 0.99); // total length 1 = the whole pin
     const coldPin = ScrollTrigger.create({
       trigger: '#cold',
       start: 'top top',
-      end: '+=120%',
+      end: '+=260%',
       pin: true,
       scrub: true,
       animation: coldDom,
     });
-    key(slice(coldPin, 0, 0.8), S.cold, S.frozen);
+    // Chill: condensation, the glass rises, ice drops in. Then tilt, pour,
+    // fill, stop and set the can down beside the glass.
+    const POSE = ['x', 'y', 'scale', 'rx', 'ry', 'rz', 'float', 'shadow'];
+    const CHILL = [...POSE, 'frost', 'glass', 'ice'];
+    key(slice(coldPin, 0, 0.22), pick(S.cold, CHILL), pick(S.chilled, CHILL));
+    key(slice(coldPin, 0.24, 0.4), pick(S.chilled, POSE), pick(S.pour, POSE), 'power2.inOut');
+    key(slice(coldPin, 0.38, 0.47), { stream: 0 }, { stream: 1 }, 'power1.in');
+    key(slice(coldPin, 0.46, 0.78), { fill: 0, foam: 0 }, { fill: S.poured.fill, foam: 1 }, 'power1.out');
+    key(slice(coldPin, 0.4, 0.78), { rz: S.pour.rz }, { rz: S.poured.rz }, 'none');
+    key(slice(coldPin, 0.78, 0.86), { streamTail: 0 }, { streamTail: 1 }, 'power1.in');
+    key(slice(coldPin, 0.85, 1), pick(S.poured, [...POSE, 'foam']), pick(S.served, [...POSE, 'foam']), 'power2.inOut');
 
     // ── Flavors, then off stage, then back for the finale
-    key(between('#flavors', 'top bottom', 'top top'), S.frozen, S.flavors);
+    key(between('#flavors', 'top bottom', 'top top'), S.served, S.flavors);
     key(between('#facts', 'top bottom', 'top 15%'), S.flavors, S.exit);
     // While off screen, jump from above the viewport to below it (a zero-length
     // segment), so the can rises up with the footer instead of crossing the form.

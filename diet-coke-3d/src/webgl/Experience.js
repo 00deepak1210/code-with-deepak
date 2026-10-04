@@ -2,11 +2,14 @@ import * as THREE from 'three';
 import gsap from 'gsap';
 import { Can, CAN, MOUTH_CENTER } from './Can.js';
 import { Bubbles, Burst } from './Bubbles.js';
-import { IceCubes } from './IceCubes.js';
+import { Glass } from './Glass.js';
+import { Stream } from './Stream.js';
 import { createStudioEnvironment } from './environment.js';
 import { createShadowTexture } from './textures.js';
 
 const TAU = Math.PI * 2;
+const _from = new THREE.Vector3();
+const _to = new THREE.Vector3();
 const nextFrame = () => new Promise((resolve) => requestAnimationFrame(() => resolve()));
 
 // Every value the scroll choreography can animate. x / y are fractions of the
@@ -26,9 +29,18 @@ export const BASE_STATE = {
   mouth: 0,
   burst: 0,
   frost: 0,
-  ice: 0,
   shadow: 0,
   bubbles: 0,
+  // The serve: glass position (like x / y) and size, then the pour
+  glass: 0, // 0 = below the fold, 1 = standing in place
+  gx: 0,
+  gy: 0,
+  gscale: 0.56,
+  ice: 0, // ice cubes dropped into the glass
+  stream: 0, // how far the stream has reached from the can to the glass
+  streamTail: 0, // the end of the stream leaving the can when the pour stops
+  fill: 0,
+  foam: 0,
 };
 
 export class Experience {
@@ -48,6 +60,7 @@ export class Experience {
     this.pointer = { x: 0, y: 0, sx: 0, sy: 0 };
     this.wasVisible = true;
     this.beforeRender = null; // set by the scroll choreography
+    this.drag = { angle: 0, velocity: 0, active: false, last: 0 };
   }
 
   async init(onProgress = () => {}) {
@@ -84,10 +97,12 @@ export class Experience {
 
     this.burst = new Burst({ count: this.isMobile ? 240 : 420, pixelRatio: this.pixelRatio });
     this.burst.points.position.copy(MOUTH_CENTER);
-    this.can.model.add(this.burst.points);
+    this.can.lidGroup.add(this.burst.points);
 
-    this.ice = new IceCubes();
-    this.scene.add(this.ice.group);
+    this.glass = new Glass({ pixelRatio: this.pixelRatio, bubbleCount: this.isMobile ? 160 : 320 });
+    this.scene.add(this.glass.group);
+    this.stream = new Stream();
+    this.scene.add(this.stream.mesh);
 
     this.shadow = new THREE.Mesh(
       new THREE.PlaneGeometry(1, 1),
@@ -111,14 +126,21 @@ export class Experience {
       });
     }
 
-    // Compile every shader up front (including the hidden ice and mouth)
-    this.ice.group.visible = true;
-    this.can.mouth.visible = true;
-    this.burst.points.visible = true;
+    // Compile every shader up front, including everything that starts hidden
+    const hidden = [
+      this.glass.group,
+      this.glass.liquid,
+      this.glass.surface,
+      this.glass.foam,
+      this.glass.bubbles,
+      this.glass.ice.group,
+      this.stream.mesh,
+      this.can.mouth,
+      this.burst.points,
+    ];
+    hidden.forEach((o) => (o.visible = true));
     await renderer.compileAsync(this.scene, this.camera);
-    this.ice.group.visible = false;
-    this.can.mouth.visible = false;
-    this.burst.points.visible = false;
+    hidden.forEach((o) => (o.visible = false));
     onProgress(0.9);
     await nextFrame();
 
@@ -156,6 +178,28 @@ export class Experience {
     gsap.to(this, { pulse: 0.86, duration: 0.5, ease: 'power2.in', yoyo: true, repeat: 1 });
     // Swap the artwork mid-spin, while the back of the can faces us.
     gsap.delayedCall(0.55, () => this.can.setFlavor(flavor));
+  }
+
+  // Drag to spin: the can follows the pointer, keeps spinning when flicked,
+  // then settles back to face the camera.
+  dragStart() {
+    this.drag.active = true;
+    this.drag.velocity = 0;
+    this.drag.last = performance.now();
+  }
+
+  dragMove(dx) {
+    const now = performance.now();
+    const elapsed = Math.max((now - this.drag.last) / 1000, 1 / 120);
+    const delta = dx * 0.011;
+    this.drag.last = now;
+    this.drag.angle += delta;
+    this.drag.velocity = THREE.MathUtils.clamp(THREE.MathUtils.lerp(this.drag.velocity, delta / elapsed, 0.6), -25, 25);
+  }
+
+  dragEnd() {
+    this.drag.active = false;
+    if (performance.now() - this.drag.last > 90) this.drag.velocity = 0; // held still before letting go
   }
 
   setBubbleColor(hex) {
@@ -200,6 +244,16 @@ export class Experience {
       this.spinAngle += (target - this.spinAngle) * (1 - Math.exp(-realDt * 4 * settle));
     }
 
+    const drag = this.drag;
+    if (!drag.active) {
+      drag.angle += drag.velocity * realDt;
+      drag.velocity *= Math.exp(-realDt * 2.2);
+      if (Math.abs(drag.velocity) < 1.2) {
+        const home = Math.round(drag.angle / TAU) * TAU;
+        drag.angle += (home - drag.angle) * (1 - Math.exp(-realDt * 2.5));
+      }
+    }
+
     const bob = Math.sin(t * 1.3) * 0.08 * s.float;
     const scale = s.scale * this.fitScale * this.pulse;
     const root = this.can.root;
@@ -211,14 +265,42 @@ export class Experience {
     );
     root.scale.setScalar(scale);
     this.can.spin.rotation.y =
-      s.ry + this.spinAngle + this.flavorSpin + this.pointer.sx * 0.3 + Math.sin(t * 0.55) * 0.32 * s.sway;
+      s.ry +
+      this.spinAngle +
+      this.flavorSpin +
+      drag.angle +
+      this.pointer.sx * 0.3 +
+      Math.sin(t * 0.55) * 0.32 * s.sway;
 
     this.can.setTab(s.tab);
     this.can.setMouth(s.mouth);
     this.can.setFrost(s.frost);
     this.burst.update(s.burst);
     this.bubbles.update(t, s.bubbles);
-    this.ice.update(t, dt * motion, s.ice, root.position, scale);
+
+    // The serve: glass, ice, cola and the stream between can and glass
+    this.glass.update({
+      time: t,
+      dt: dt * motion,
+      x: s.gx * this.viewWidth * 0.5,
+      y: s.gy * this.viewHeight * 0.5,
+      scale: s.gscale * this.fitScale,
+      show: s.glass,
+      fill: s.fill,
+      foam: s.foam,
+      ice: s.ice,
+    });
+    if (this.glass.group.visible && s.stream > 0.001 && s.streamTail < 0.999) {
+      root.updateMatrixWorld(true);
+      this.glass.group.updateMatrixWorld(true);
+      this.can.pourLip.getWorldPosition(_from);
+      this.glass.surfacePoint(_to);
+      const { x: cx, halfWidth } = this.glass.opening;
+      _to.x = THREE.MathUtils.clamp(_from.x + 0.25 * scale, cx - halfWidth, cx + halfWidth);
+      this.stream.update({ from: _from, to: _to, head: s.stream, tail: s.streamTail, radius: 0.12 * scale, time: t });
+    } else {
+      this.stream.mesh.visible = false;
+    }
 
     // Soft contact shadow under the can
     const bottom = root.position.y - (CAN.height / 2) * scale;

@@ -3,13 +3,15 @@ import gsap from 'gsap';
 export function createLoader() {
   const root = document.querySelector('.loader');
   const num = root.querySelector('.loader__num');
-  const bar = root.querySelector('.loader__bar span');
+  const logo = root.querySelector('.loader__logo');
   const shown = { value: 0 };
   const startedAt = performance.now();
 
   const render = () => {
     num.textContent = Math.round(shown.value);
-    bar.style.transform = `scaleX(${shown.value / 100})`;
+    // The wordmark fills with liquid; slightly over-range so the wave's
+    // troughs clear the top at 100%.
+    logo.style.setProperty('--fill', `${shown.value * 1.2 - 8}%`);
   };
 
   const setProgress = (p) =>

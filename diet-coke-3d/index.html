@@ -23,12 +23,14 @@
     <!-- ░░ Preloader ░░ -->
     <div class="loader" aria-hidden="true">
       <div class="loader__inner">
-        <p class="loader__logo"><span class="logo-diet">diet</span><span class="logo-coke">Coke</span></p>
+        <p class="loader__logo">
+          <span class="loader__ghost"><span class="logo-diet">diet</span><span class="logo-coke">Coke</span></span>
+          <span class="loader__fill"><span class="logo-diet">diet</span><span class="logo-coke">Coke</span></span>
+        </p>
         <div class="loader__meta">
           <span class="loader__hint">Chilling to 3°C</span>
           <span class="loader__count"><span class="loader__num">0</span>%</span>
         </div>
-        <div class="loader__bar"><span></span></div>
       </div>
     </div>
 
@@ -69,6 +71,12 @@
           <span class="hero__mask" aria-hidden="true"><span class="hero__word hero__word--diet">Diet</span></span>
           <span class="hero__mask" aria-hidden="true"><span class="hero__word hero__word--coke">Coke</span></span>
         </h1>
+
+        <div class="drag-zone" data-drag-spin data-cursor="Drag" aria-hidden="true"></div>
+        <p class="drag-hint" aria-hidden="true">
+          <svg viewBox="0 0 32 12"><path d="M5 1 1 6l4 5M27 1l4 5-4 5M1 6h30" /></svg>
+          Drag to spin
+        </p>
 
         <div class="hero__content">
           <p class="eyebrow hero__eyebrow"><span class="dot"></span>Est. 1982 · Zero sugar</p>
@@ -165,7 +173,7 @@
               <span class="cold__temp"><span class="cold__num">24</span>°</span><span class="cold__c">C</span>
             </h2>
             <p class="cold__text">
-              Chill it until the can sweats. Then give it five more minutes. <em>Cold is a flavor too.</em>
+              Chill it until the can sweats, then pour it slowly over plenty of ice. <em>Cold is a flavor too.</em>
             </p>
             <ul class="cold__specs">
               <li><span>Temperature</span><strong>3°C / 38°F</strong></li>
@@ -180,6 +188,7 @@
       <!-- ░░ 05 · Flavors ░░ -->
       <section class="flavors" id="flavors" data-theme="flavor">
         <div class="flavors__bigname" aria-hidden="true"><span>Classic</span></div>
+        <div class="drag-zone drag-zone--flavors" data-drag-spin="mouse" data-cursor="Drag" aria-hidden="true"></div>
 
         <header class="flavors__head">
           <p class="eyebrow">The lineup</p>
@@ -289,6 +298,7 @@
 
     <!-- ░░ Footer ░░ -->
     <footer class="footer" id="footer" data-theme="red">
+      <div class="drag-zone drag-zone--footer" data-drag-spin data-cursor="Drag" aria-hidden="true"></div>
       <div class="footer__top">
         <p class="footer__cta">Go on. <em>Crack one open.</em></p>
         <button type="button" class="btn btn--ghost" data-scroll-to="#top" data-magnetic>

@@ -28,7 +28,7 @@ export function createStudioEnvironment(renderer) {
   panel(9, 9, 1.7, [0, 8, 0]); // overhead softbox
   panel(12, 7, 0.55, [0, 1, 10]); // broad front fill
   panel(30, 30, 0.35, [0, -7, 0], 0xfff2ea); // warm floor bounce
-  panel(3, 14, 1.2, [0, 0, -9], 0xffd9d9); // faint warm backdrop glow
+  panel(3, 14, 0.7, [0, 0, -9], 0xfff1ee); // faint warm backdrop glow
 
   const pmrem = new THREE.PMREMGenerator(renderer);
   const target = pmrem.fromScene(studio, 0.03);

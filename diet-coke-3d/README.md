@@ -1,8 +1,8 @@
 # Diet Coke — 3D Concept Website
 
 An immersive, scroll-driven product website built around a fully procedural 3D Diet Coke can.
-Scroll to spin the can through a product tour, crack it open, chill it until it sweats,
-then pick a flavor.
+Scroll to spin the can through a product tour, crack it open, chill it and pour it over ice,
+then pick a flavor. Grab the can at any time to spin it yourself.
 
 ![Hero](docs/hero.jpg)
 
@@ -21,13 +21,19 @@ then pick a flavor.
   overhead box) is rendered into a pre-filtered environment map, which gives the can those long
   vertical product-shot highlights.
 - **Scroll storytelling.** Each chapter turns a different panel of the label to the camera:
-  *zero sugar* → *nutrition facts* → *caffeine*. Then the tab lifts, the can pops open and sprays
-  bubbles, condensation beads on the metal and ice cubes drift in.
+  *zero sugar* → *nutrition facts* → *caffeine*. Then the tab lifts and the can pops open and
+  sprays bubbles.
+- **The pour.** Condensation beads on the can, a glass rises and ice drops in. The can tilts with
+  its logo reading sideways and pours a stream of cola that arcs into the glass, and the drink
+  rises with bubbles and a foam head. The stream is drawn along a curve in a shader, so it follows
+  the can and the glass wherever the scroll moves them.
+- **Drag to spin.** Grab the can in the hero, flavors and footer and flick it; it keeps spinning,
+  then settles back to face you.
 - **Flavor switcher.** Classic, Cherry, Lime and Mango. The can spins, its artwork is swapped mid-turn
   and the whole page re-themes. Works with buttons, arrow keys or a swipe.
 - **Synthesised sound (optional).** Turn on *Sound* in the nav to hear the crack and fizz. It's
   generated live with the Web Audio API, so the project ships no audio files.
-- **Details:** preloader, smooth scrolling, masked text reveals, counters, a velocity-reactive marquee,
+- **Details:** a preloader that fills the wordmark with liquid, smooth scrolling, masked text reveals, counters, a velocity-reactive marquee,
   magnetic buttons, a custom cursor, film grain and a dedicated mobile layout. With
   `prefers-reduced-motion`, the idle animation and smooth scrolling are turned off.
 
@@ -88,12 +94,16 @@ diet-coke-3d/
     │   ├── textures.js         # label artwork, lid, condensation & shadow textures
     │   ├── environment.js      # virtual photo studio → environment map
     │   ├── Bubbles.js          # ambient carbonation + the opening spray
-    │   └── IceCubes.js         # glassy ice cubes
+    │   ├── Glass.js            # glass, cola, foam head and bubbles
+    │   ├── Stream.js           # the pour, a tube built along a curve in a shader
+    │   ├── IceCubes.js         # ice dropped into the glass
+    │   └── materials.js        # fake glass for the glass and ice
+
     ├── animations/
     │   ├── choreography.js     # the can's poses per chapter, driven by scroll
     │   └── reveal.js           # text reveals, counters, marquee
     └── ui/
-        ├── loader.js, cursor.js, flavors.js, sound.js
+        ├── loader.js, cursor.js, drag.js, flavors.js, sound.js
 ```
 
 ## How the scroll choreography works

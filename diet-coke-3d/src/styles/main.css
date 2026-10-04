@@ -333,26 +333,49 @@ html.has-cursor input {
 }
 
 .loader__logo {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
+  position: relative;
   margin-bottom: 30px;
   font-size: clamp(56px, 9vw, 96px);
   line-height: 1;
+}
+
+.loader__ghost,
+.loader__fill {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  padding: 0.12em 0.05em 0.18em;
 }
 
 .loader__logo .logo-diet {
   font-size: 0.58em;
 }
 
-.loader__logo .logo-coke {
-  color: var(--red);
+.loader__ghost span {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(244, 244, 242, 0.3);
+}
+
+/* The wordmark fills up with a wave of liquid as the page loads */
+.loader__fill {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' preserveAspectRatio='none'%3E%3Cpath fill='%23e4002b' d='M0 100C25 92 25 92 50 100S75 108 100 100 125 92 150 100 175 108 200 100V200H0Z'/%3E%3C/svg%3E");
+  background-size: 200% 200%;
+  background-repeat: repeat-x;
+  background-position: 0 var(--fill, -8%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: wave 1.6s linear infinite;
+}
+
+.loader__fill span {
+  color: transparent;
 }
 
 .loader__meta {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 12px;
   font-size: 11px;
   font-weight: 600;
   font-stretch: 125%;
@@ -360,19 +383,6 @@ html.has-cursor input {
   text-transform: uppercase;
   font-variant-numeric: tabular-nums;
   color: rgba(244, 244, 242, 0.6);
-}
-
-.loader__bar {
-  height: 1px;
-  background: rgba(244, 244, 242, 0.15);
-}
-
-.loader__bar span {
-  display: block;
-  height: 100%;
-  background: var(--red);
-  transform: scaleX(0);
-  transform-origin: left;
 }
 
 /* Navigation ------------------------------------------------------------- */
@@ -647,6 +657,65 @@ html.has-cursor input {
   background: linear-gradient(var(--fg), transparent);
   transform-origin: top;
   animation: scrollcue 2.2s var(--ease-out) infinite;
+}
+
+/* Drag to spin ------------------------------------------------------------ */
+
+.drag-zone {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  width: min(34vw, 460px);
+  height: min(72vh, 700px);
+  translate: -50% -50%;
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.drag-zone.is-dragging {
+  cursor: grabbing;
+}
+
+html.has-cursor .drag-zone {
+  cursor: none;
+}
+
+.drag-zone--footer {
+  top: 40%;
+  height: 46vh;
+}
+
+.drag-hint {
+  position: absolute;
+  top: 63%;
+  left: calc(50% + min(14vw, 200px));
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  font-stretch: 125%;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.drag-hint svg {
+  width: 32px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.2;
+  animation: nudge 2.4s ease-in-out infinite;
+}
+
+/* The transition lives here only, so it can't fight the intro animation */
+.drag-hint.is-done {
+  opacity: 0 !important;
+  transition: opacity 0.6s;
 }
 
 /* 02 · Zero --------------------------------------------------------------- */
@@ -1559,6 +1628,22 @@ html.has-cursor input {
   }
 }
 
+@keyframes wave {
+  to {
+    background-position-x: 100%;
+  }
+}
+
+@keyframes nudge {
+  0%,
+  100% {
+    transform: translateX(-4px);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+
 @keyframes eq {
   0% {
     transform: scaleY(0.25);
@@ -1641,8 +1726,20 @@ html.has-cursor input {
 
   .hero__meta,
   .hero__scroll,
-  .zero__hint {
+  .zero__hint,
+  .drag-hint {
     display: none;
+  }
+
+  .drag-zone {
+    top: 40%;
+    width: 64vw;
+    height: 40vh;
+  }
+
+  .drag-zone--footer {
+    top: 45%;
+    height: 26vh;
   }
 
   .zero__bg {

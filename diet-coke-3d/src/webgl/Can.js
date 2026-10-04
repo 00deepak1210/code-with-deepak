@@ -25,6 +25,8 @@ const MOUTH = [
   [-0.26, 0.4, -0.13, 0.17, 0, 0.17],
 ];
 export const MOUTH_CENTER = new THREE.Vector3(0, CAN.lidY + 0.02, 0.42);
+// Where poured liquid leaves the can: on the rim, just past the opening.
+const POUR_LIP = new THREE.Vector3(0, CAN.height - 0.02, 0.86);
 
 export class Can {
   constructor({ renderer, flavor, labelSize }) {
@@ -40,6 +42,15 @@ export class Can {
     this.model.position.y = -CAN.height / 2;
     this.root.add(this.spin);
     this.spin.add(this.model);
+    // Lid, tab and opening are turned a quarter so the opening sits on the
+    // right-hand edge when the logo faces us: that's the edge the can pours
+    // from, with the vertical logo reading left to right.
+    this.lidGroup = new THREE.Group();
+    this.lidGroup.rotation.y = Math.PI / 2;
+    this.model.add(this.lidGroup);
+    this.pourLip = new THREE.Object3D();
+    this.pourLip.position.copy(POUR_LIP);
+    this.lidGroup.add(this.pourLip);
 
     this.createMaterials(flavor);
     this.createBody();
@@ -127,7 +138,7 @@ export class Can {
     lid.rotateX(-Math.PI / 2);
     this.lid = new THREE.Mesh(lid, this.lidMaterial);
     this.lid.position.y = CAN.lidY;
-    this.model.add(this.lid);
+    this.lidGroup.add(this.lid);
   }
 
   createBottom() {
@@ -175,7 +186,7 @@ export class Can {
 
     const rivet = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.046, 0.03, 32), this.tabMaterial);
     rivet.position.set(0, CAN.lidY + 0.018, 0);
-    this.model.add(this.tabPivot, rivet);
+    this.lidGroup.add(this.tabPivot, rivet);
   }
 
   createMouth() {
@@ -191,7 +202,7 @@ export class Can {
     this.mouth = new THREE.Mesh(geometry, this.mouthMaterial);
     this.mouth.position.set(0, CAN.lidY + 0.003, 0.17);
     this.mouth.visible = false;
-    this.model.add(this.mouth);
+    this.lidGroup.add(this.mouth);
   }
 
   getLabel(flavor) {

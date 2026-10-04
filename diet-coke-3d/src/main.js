@@ -13,6 +13,7 @@ import { initMarquee, initReveals } from './animations/reveal.js';
 import { createLoader } from './ui/loader.js';
 import { initCursor, initMagnetic } from './ui/cursor.js';
 import { initFlavors } from './ui/flavors.js';
+import { initDragSpin } from './ui/drag.js';
 import { Fizz } from './ui/sound.js';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -156,7 +157,7 @@ async function playIntro() {
   tl.from('.hero__word', { yPercent: 105, duration: 1.5, ease: 'expo.out', stagger: 0.12 }, 0)
     .from('.nav > *', { y: -30, opacity: 0, duration: 1, ease: 'power3.out', stagger: 0.08 }, 0.4)
     .from(
-      '.hero__content > *, .hero__meta li, .hero__scroll',
+      '.hero__content > *, .hero__meta li, .hero__scroll, .drag-hint',
       { y: 30, opacity: 0, duration: 1, ease: 'power3.out', stagger: 0.06 },
       0.6,
     )
@@ -196,6 +197,7 @@ async function boot() {
 
   initCursor();
   initMagnetic();
+  initDragSpin(experience);
   initJoinForm();
   initSound();
   initFlavors({
