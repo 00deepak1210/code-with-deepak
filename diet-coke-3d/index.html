@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Diet Coke — Zero Sugar. All Icon. | 3D Concept</title>
+    <meta
+      name="description"
+      content="An immersive 3D concept website for Diet Coke. Spin the silver can, crack it open and pick your flavor — zero sugar, zero calories, all taste."
+    />
+    <meta name="theme-color" content="#0b0b0c" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Diet Coke — Zero Sugar. All Icon. (3D Concept)" />
+    <meta
+      property="og:description"
+      content="Spin the silver can, crack it open and pick your flavor. A fan-made 3D concept built with Three.js and GSAP."
+    />
+    <meta property="og:image" content="og-image.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body class="is-loading">
+    <!-- ░░ Preloader ░░ -->
+    <div class="loader" aria-hidden="true">
+      <div class="loader__inner">
+        <p class="loader__logo">
+          <span class="loader__ghost"><span class="logo-diet">diet</span><span class="logo-coke">Coke</span></span>
+          <span class="loader__fill"><span class="logo-diet">diet</span><span class="logo-coke">Coke</span></span>
+        </p>
+        <div class="loader__meta">
+          <span class="loader__hint">Chilling to 3°C</span>
+          <span class="loader__count"><span class="loader__num">0</span>%</span>
+        </div>
+      </div>
+    </div>
+
+    <canvas class="webgl" aria-hidden="true"></canvas>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="cursor" aria-hidden="true">
+      <span class="cursor__ring"><span class="cursor__label"></span></span>
+      <span class="cursor__dot"></span>
+    </div>
+
+    <!-- ░░ Navigation ░░ -->
+    <header class="nav">
+      <a href="#top" class="nav__logo" data-scroll-to aria-label="Diet Coke concept, back to top">
+        <span class="logo-diet">diet</span><span class="logo-coke">Coke</span>
+      </a>
+      <nav class="nav__links" aria-label="Primary">
+        <a href="#zero" data-scroll-to><span>Taste</span></a>
+        <a href="#crack" data-scroll-to><span>Fizz</span></a>
+        <a href="#flavors" data-scroll-to><span>Flavors</span></a>
+        <a href="#facts" data-scroll-to><span>Facts</span></a>
+      </nav>
+      <div class="nav__actions">
+        <button type="button" class="sound-btn" aria-pressed="false" aria-label="Sound off. Turn on the fizz" data-magnetic>
+          <span class="sound-btn__bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span class="sound-btn__label">Sound</span>
+        </button>
+        <a href="#join" class="btn btn--pill nav__cta" data-scroll-to data-magnetic>
+          <span class="btn__label">Join the fizz</span>
+        </a>
+      </div>
+    </header>
+
+    <main id="top">
+      <!-- ░░ 01 · Hero ░░ -->
+      <section class="hero" id="hero" data-theme="ink">
+        <div class="hero__glow" aria-hidden="true"></div>
+        <h1 class="hero__type" aria-label="Diet Coke">
+          <span class="hero__mask" aria-hidden="true"><span class="hero__word hero__word--diet">Diet</span></span>
+          <span class="hero__mask" aria-hidden="true"><span class="hero__word hero__word--coke">Coke</span></span>
+        </h1>
+
+        <div class="drag-zone" data-drag-spin data-cursor="Drag" aria-hidden="true"></div>
+        <p class="drag-hint" aria-hidden="true">
+          <svg viewBox="0 0 32 12"><path d="M5 1 1 6l4 5M27 1l4 5-4 5M1 6h30" /></svg>
+          Drag to spin
+        </p>
+
+        <div class="hero__content">
+          <p class="eyebrow hero__eyebrow"><span class="dot"></span>Est. 1982 · Zero sugar</p>
+          <p class="hero__lede">
+            Crisp, light and unapologetically bold. The silver can that never goes out of style, now in
+            <em>three dimensions.</em>
+          </p>
+          <div class="hero__actions">
+            <a href="#flavors" class="btn btn--solid" data-scroll-to data-magnetic><span class="btn__label">Explore flavors</span></a>
+            <a href="#zero" class="btn btn--ghost" data-scroll-to data-magnetic><span class="btn__label">Discover the taste</span></a>
+          </div>
+        </div>
+
+        <ul class="hero__meta" aria-label="Can details">
+          <li><span>Volume</span><strong>12 fl oz · 355 ml</strong></li>
+          <li><span>Serve</span><strong>Ice cold, 3°C</strong></li>
+          <li><span>Edition</span><strong>N°01 Classic</strong></li>
+        </ul>
+
+        <div class="hero__scroll" aria-hidden="true">
+          <span>Scroll to crack one open</span>
+          <i></i>
+        </div>
+      </section>
+
+      <!-- ░░ 02 · Zero (pinned product tour) ░░ -->
+      <section class="zero" id="zero" data-theme="paper">
+        <div class="zero__pin">
+          <div class="zero__bg" aria-hidden="true">
+            <span class="zero__bgnum is-active">0</span>
+            <span class="zero__bgnum">0</span>
+            <span class="zero__bgnum">46</span>
+          </div>
+
+          <div class="zero__steps">
+            <article class="zero__step is-active">
+              <p class="eyebrow">01 — Sugar</p>
+              <p class="zero__figure"><span class="zero__num">0</span><span class="zero__unit">g</span></p>
+              <h2 class="zero__title">Not a gram. <em>Not a grain.</em></h2>
+              <p class="zero__text">
+                All of the crisp cola taste you love, none of the sugar. That's not a compromise, that's the whole point.
+              </p>
+            </article>
+            <article class="zero__step">
+              <p class="eyebrow">02 — Calories</p>
+              <p class="zero__figure"><span class="zero__num">0</span><span class="zero__unit">cal</span></p>
+              <h2 class="zero__title">Light enough <em>to float.</em></h2>
+              <p class="zero__text">
+                Zero calories, maximum attitude. The lightest thing you'll pick up all day and the boldest thing you'll taste.
+              </p>
+            </article>
+            <article class="zero__step">
+              <p class="eyebrow">03 — Caffeine</p>
+              <p class="zero__figure"><span class="zero__num">46</span><span class="zero__unit">mg</span></p>
+              <h2 class="zero__title">A crisp little <em>lift.</em></h2>
+              <p class="zero__text">
+                Just enough caffeine to rescue the 3 p.m. slump, served at the temperature of good decisions.
+              </p>
+            </article>
+          </div>
+
+          <ol class="zero__progress" aria-hidden="true">
+            <li class="is-active"><span>01</span>Sugar</li>
+            <li><span>02</span>Calories</li>
+            <li><span>03</span>Caffeine</li>
+          </ol>
+          <p class="zero__hint" aria-hidden="true">Keep scrolling to spin the can</p>
+        </div>
+      </section>
+
+      <!-- ░░ 03 · Crack (pinned) ░░ -->
+      <section class="crack" id="crack" data-theme="red">
+        <div class="crack__pin">
+          <h2 class="crack__type" aria-label="Pssst">
+            <span aria-hidden="true">P</span><span aria-hidden="true">s</span><span aria-hidden="true">s</span><span aria-hidden="true">s</span><span aria-hidden="true">t</span><span aria-hidden="true">.</span>
+          </h2>
+          <div class="crack__copy crack__copy--a">
+            <p class="eyebrow">The sound</p>
+            <p class="crack__line">The best half-second <em>of your day.</em></p>
+          </div>
+          <div class="crack__copy crack__copy--b">
+            <p class="crack__line">Crack. Fizz. Sip. <em>Repeat.</em></p>
+            <p class="crack__small">Thousands of tiny bubbles, one very satisfying sound.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ░░ 04 · Cold (pinned) ░░ -->
+      <section class="cold" id="cold" data-theme="ice">
+        <div class="cold__pin">
+          <div class="cold__content">
+            <p class="eyebrow">The perfect serve</p>
+            <h2 class="cold__title">
+              <span class="cold__temp"><span class="cold__num">24</span>°</span><span class="cold__c">C</span>
+            </h2>
+            <p class="cold__text">
+              Chill it until the can sweats, then pour it slowly over plenty of ice. <em>Cold is a flavor too.</em>
+            </p>
+            <ul class="cold__specs">
+              <li><span>Temperature</span><strong>3°C / 38°F</strong></li>
+              <li><span>Glass</span><strong>Tall &amp; chilled</strong></li>
+              <li><span>Ice</span><strong>Lots. Then more.</strong></li>
+              <li><span>Garnish</span><strong>A slice of lime</strong></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ░░ 05 · Flavors ░░ -->
+      <section class="flavors" id="flavors" data-theme="flavor">
+        <div class="flavors__bigname" aria-hidden="true"><span>Classic</span></div>
+        <div class="drag-zone drag-zone--flavors" data-drag-spin="mouse" data-cursor="Drag" aria-hidden="true"></div>
+
+        <header class="flavors__head">
+          <p class="eyebrow">The lineup</p>
+          <h2 class="flavors__title">Pick your <em>flavor.</em></h2>
+        </header>
+
+        <div class="flavors__info" aria-live="polite">
+          <p class="flavors__index"><span class="flavors__current">01</span><span class="flavors__total">/ 04</span></p>
+          <h3 class="flavors__name">Classic</h3>
+          <p class="flavors__tagline">The silver original.</p>
+          <p class="flavors__desc">
+            Crisp, clean and impossibly light. The can that started it all in 1982, still the sharpest thing in the fridge.
+          </p>
+          <ul class="flavors__notes">
+            <li>Crisp</li>
+            <li>Clean</li>
+            <li>Iconic</li>
+          </ul>
+        </div>
+
+        <div class="flavors__controls">
+          <div class="flavors__list" aria-label="Choose a flavor">
+            <button type="button" class="flavor-btn is-active" data-flavor="0" aria-pressed="true">
+              <i style="--swatch: #e4002b"></i><span>Classic</span>
+            </button>
+            <button type="button" class="flavor-btn" data-flavor="1" aria-pressed="false">
+              <i style="--swatch: #b0123f"></i><span>Cherry</span>
+            </button>
+            <button type="button" class="flavor-btn" data-flavor="2" aria-pressed="false">
+              <i style="--swatch: #3e9b2f"></i><span>Lime</span>
+            </button>
+            <button type="button" class="flavor-btn" data-flavor="3" aria-pressed="false">
+              <i style="--swatch: #f57c00"></i><span>Mango</span>
+            </button>
+          </div>
+          <div class="flavors__arrows">
+            <button type="button" class="arrow-btn" data-flavor-step="-1" aria-label="Previous flavor" data-magnetic>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+            </button>
+            <button type="button" class="arrow-btn" data-flavor-step="1" aria-label="Next flavor" data-magnetic>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ░░ 06 · Facts ░░ -->
+      <section class="facts" id="facts" data-theme="ink">
+        <header class="facts__head">
+          <p class="eyebrow">By the numbers</p>
+          <h2 class="facts__title" data-split>Everything you need. <em>Nothing you don't.</em></h2>
+        </header>
+        <div class="facts__grid">
+          <div class="fact">
+            <p class="fact__value"><span class="fact__num" data-count="0" data-from="39">0</span><span class="fact__unit">g</span></p>
+            <p class="fact__label">Sugar per can</p>
+          </div>
+          <div class="fact">
+            <p class="fact__value"><span class="fact__num" data-count="0" data-from="140">0</span><span class="fact__unit">cal</span></p>
+            <p class="fact__label">Calories per can</p>
+          </div>
+          <div class="fact">
+            <p class="fact__value"><span class="fact__num" data-count="46">46</span><span class="fact__unit">mg</span></p>
+            <p class="fact__label">Caffeine per 12 fl oz</p>
+          </div>
+          <div class="fact">
+            <p class="fact__value"><span class="fact__num" data-count="355">355</span><span class="fact__unit">ml</span></p>
+            <p class="fact__label">Of ice-cold fizz</p>
+          </div>
+          <div class="fact fact--wide">
+            <p class="fact__value"><span class="fact__num" data-count="1982" data-from="1900">1982</span></p>
+            <p class="fact__label">The year a legend got canned</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ░░ Marquee ░░ -->
+      <section class="marquee" aria-hidden="true">
+        <div class="marquee__track">
+          <div class="marquee__group">
+            <span>Zero sugar</span><i>✦</i><span class="is-outline">Zero calories</span><i>✦</i><span>All taste</span><i>✦</i><span class="is-serif">ice cold</span><i>✦</i>
+          </div>
+          <div class="marquee__group">
+            <span>Zero sugar</span><i>✦</i><span class="is-outline">Zero calories</span><i>✦</i><span>All taste</span><i>✦</i><span class="is-serif">ice cold</span><i>✦</i>
+          </div>
+        </div>
+      </section>
+
+      <!-- ░░ 07 · Join ░░ -->
+      <section class="join" id="join" data-theme="paper">
+        <div class="join__inner">
+          <p class="eyebrow">The fizz club</p>
+          <h2 class="join__title" data-split>Stay <em>in the fizz.</em></h2>
+          <p class="join__text">
+            Limited drops, new flavors and the occasional love letter to aluminum. No spam, only bubbles.
+          </p>
+          <form class="join__form" novalidate>
+            <label class="sr-only" for="join-email">Email address</label>
+            <input id="join-email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required />
+            <button type="submit" class="btn btn--solid" data-magnetic><span class="btn__label">Sign me up</span></button>
+          </form>
+          <p class="join__msg" role="status" aria-live="polite"></p>
+          <p class="join__note">Demo form: this concept site doesn't store or send any data.</p>
+        </div>
+      </section>
+    </main>
+
+    <!-- ░░ Footer ░░ -->
+    <footer class="footer" id="footer" data-theme="red">
+      <div class="drag-zone drag-zone--footer" data-drag-spin data-cursor="Drag" aria-hidden="true"></div>
+      <div class="footer__top">
+        <p class="footer__cta">Go on. <em>Crack one open.</em></p>
+        <button type="button" class="btn btn--ghost" data-scroll-to="#top" data-magnetic>
+          <span class="btn__label">Back to top ↑</span>
+        </button>
+      </div>
+      <p class="footer__wordmark" aria-hidden="true"><span class="logo-diet">diet</span><span class="logo-coke">Coke</span></p>
+      <div class="footer__bottom">
+        <p>
+          A fan-made concept by Code with Deepak, built for learning. Not affiliated with, sponsored or endorsed by The
+          Coca-Cola Company. Diet Coke and Coke are registered trademarks of The Coca-Cola Company.
+        </p>
+        <p>Built with Three.js, GSAP &amp; Lenis</p>
+      </div>
+    </footer>
+
+    <noscript>
+      <p class="noscript">This experience needs JavaScript to render the 3D can.</p>
+    </noscript>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
